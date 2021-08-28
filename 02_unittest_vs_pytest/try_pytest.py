@@ -5,7 +5,7 @@ def cube(n):
     return n*n*n
 
 def test_square():
-   assert square(2) == 40
+   assert square(2) == 4
  
 def test_cube():
    assert cube(2) == 8 
