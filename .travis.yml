@@ -1,13 +1,7 @@
 language: python
 python:
   - "2.7"
-  - "3.4"
-  - "3.5"
   - "3.6"      # current default Python on Travis CI
-  - "3.7"
-  - "3.8"
-  - "3.9"
-  - "3.9-dev"  # 3.9 development branch
   - "nightly"  # nightly build
 
 # command to install dependencies
@@ -18,3 +12,13 @@ install:
 script:
   - pytest  02_unittest_vs_pytest/*.py
 
+after_success: |
+  if [ -n "$GITREPO_TOKEN" -a "x$TRAVIS_BRANCH" = "xmaster" ]; then
+    git clone https://innopearl:${GITREPO_TOKEN}@github.com/innopearl/autogen.git &>/dev/null
+    cd autogen
+    date +%Y-%m-%d-%H:%M:%S > geninfo.txt
+    git add geninfo.txt
+    git -c user.name='innopearl' -c user.email='innopearl@users.noreply.github.com' commit -m autocommit
+    # Make sure to make the output quiet, or else the API token will leak!
+    git push -f -q https://innopearl:${GITREPO_TOKEN}@github.com/innopearl/autogen.git &>/dev/null
+  fi    
